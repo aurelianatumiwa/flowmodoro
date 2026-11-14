@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flowmodoro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: one soft column. A lilac pond scene with a water lily that blooms while you focus, then calm pastel stats below. Rounded shapes, flat illustration, single light theme. */
+/* Light palette is the default. Dark is a toned-down night version that keeps a purple tint. */
+:root{
+  --ink:#32285A;
+  --muted:#6B6285;
+  --lilac:#7A5FC0;
+  --lilac-mid:#B7A0EA;
+  --lilac-soft:#D3C2F5;
+  --lilac-wash:#EFE9FB;
+  --bg-top:#F9F6FF;
+  --bg-bottom:#ECE4FA;
+  --blush:#FDE8F1;
+  --sage:#E3F4EE;
+  --sun:#FFC95E;
+  --card:#FFFFFF;
+  --line:#E3DAF5;
+  --on-lilac:#FFFFFF;
+  --on-sun:#32285A;
+  --placeholder:#9A92B3;
+  --shadow:rgba(90,60,160,.08);
+  --toast-bg:#32285A;
+  --toast-fg:#FFFFFF;
+  --sky-a:#F6F1FE;
+  --sky-b:#E4D9F8;
+  --water-a:#C9B8F0;
+  --water-b:#B19BE6;
+  --sun-disc:#FFE2A3;
+  --cloud:#FFFFFF;
+  --cloud-op:.75;
+  --star-op:0;
+  --pad-a:#8FCBB6;
+  --pad-b:#A8DCC8;
+  --petal-back:#B7A0EA;
+  --petal-mid:#D3C2F5;
+  --petal-front:#F3CDE0;
+  --petal-stroke:rgba(255,255,255,.7);
+  --lily-shadow-op:.18;
+  --font:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#EDE8F7;
+    --muted:#A9A0C4;
+    --lilac:#A18BE6;
+    --lilac-mid:#7C66BF;
+    --lilac-soft:#4A3E73;
+    --lilac-wash:#352D50;
+    --bg-top:#1C1829;
+    --bg-bottom:#262036;
+    --blush:#3E2B46;
+    --sage:#243C3A;
+    --sun:#FFC95E;
+    --card:#2B2441;
+    --line:#3D3459;
+    --on-lilac:#1B1727;
+    --on-sun:#32285A;
+    --placeholder:#7F7699;
+    --shadow:rgba(0,0,0,.35);
+    --toast-bg:#EDE8F7;
+    --toast-fg:#1B1727;
+    --sky-a:#2A2245;
+    --sky-b:#3B2F5E;
+    --water-a:#3A2E66;
+    --water-b:#2C2350;
+    --sun-disc:#E9E0FA;
+    --cloud:#9D8CD0;
+    --cloud-op:.18;
+    --star-op:.85;
+    --pad-a:#4B8576;
+    --pad-b:#5C9C8B;
+    --petal-back:#7C66BF;
+    --petal-mid:#A18BE0;
+    --petal-front:#E2B9D1;
+    --petal-stroke:rgba(255,255,255,.3);
+    --lily-shadow-op:.35;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#EDE8F7;
+  --muted:#A9A0C4;
+  --lilac:#A18BE6;
+  --lilac-mid:#7C66BF;
+  --lilac-soft:#4A3E73;
+  --lilac-wash:#352D50;
+  --bg-top:#1C1829;
+  --bg-bottom:#262036;
+  --blush:#3E2B46;
+  --sage:#243C3A;
+  --sun:#FFC95E;
+  --card:#2B2441;
+  --line:#3D3459;
+  --on-lilac:#1B1727;
+  --on-sun:#32285A;
+  --placeholder:#7F7699;
+  --shadow:rgba(0,0,0,.35);
+  --toast-bg:#EDE8F7;
+  --toast-fg:#1B1727;
+  --sky-a:#2A2245;
+  --sky-b:#3B2F5E;
+  --water-a:#3A2E66;
+  --water-b:#2C2350;
+  --sun-disc:#E9E0FA;
+  --cloud:#9D8CD0;
+  --cloud-op:.18;
+  --star-op:.85;
+  --pad-a:#4B8576;
+  --pad-b:#5C9C8B;
+  --petal-back:#7C66BF;
+  --petal-mid:#A18BE0;
+  --petal-front:#E2B9D1;
+  --petal-stroke:rgba(255,255,255,.3);
+  --lily-shadow-op:.35;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:var(--font);font-size:16px;line-height:1.45;color:var(--ink);-webkit-text-size-adjust:100%}
+html{background:var(--bg-bottom)}
+body{min-height:100%;background:linear-gradient(180deg,var(--bg-top) 0%,var(--bg-bottom) 100%);padding:max(16px,env(safe-area-inset-top)) 16px max(28px,env(safe-area-inset-bottom))}
+main{max-width:460px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 4px 0}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:36px;height:30px;display:block}
+h1{font-size:23px;font-weight:800;letter-spacing:-.01em}
+h2{font-size:16px;font-weight:800;color:var(--ink)}
+.chip{font-size:13px;font-weight:800;padding:6px 14px;border-radius:999px;background:var(--lilac-wash);color:var(--lilac)}
+body[data-mode="focus"] .chip{background:var(--lilac);color:var(--on-lilac)}
+body[data-mode="break"] .chip{background:var(--sun);color:var(--on-sun)}
+.card{background:var(--card);border-radius:28px;padding:20px;box-shadow:0 6px 24px var(--shadow)}
+.timer{padding:0;overflow:hidden}
+.scene{display:block;width:100%;height:auto}
+.body{display:flex;flex-direction:column;gap:14px;padding:6px 20px 22px}
+.readout{text-align:center;display:flex;flex-direction:column;gap:2px}
+.time{font-size:clamp(46px,16vw,60px);font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.05}
+.sub{font-size:15px;color:var(--muted);font-weight:600;text-wrap:balance}
+.barwrap{height:10px;border-radius:999px;background:var(--lilac-wash);overflow:hidden}
+.barwrap[hidden]{display:none}
+.barfill{height:100%;width:100%;border-radius:999px;background:var(--sun);transition:width .3s linear}
+.field{display:flex;flex-direction:column;gap:6px}
+.field span{font-size:13px;font-weight:800;color:var(--muted)}
+.field[hidden]{display:none}
+input[type=text],select{font:inherit;font-weight:600;font-size:16px;color:var(--ink);background:var(--bg-top);border:2px solid var(--line);border-radius:16px;padding:12px 16px;width:100%;min-height:50px}
+input[type=text]::placeholder{color:var(--placeholder)}
+input[type=text]:focus,select:focus{outline:none;border-color:var(--lilac);background:var(--card);box-shadow:0 0 0 4px var(--lilac-wash)}
+.actions{display:flex;flex-direction:column;gap:10px}
+.btn{font:inherit;font-weight:800;font-size:18px;min-height:56px;border-radius:999px;border:2px solid transparent;cursor:pointer;padding:12px 20px;width:100%}
+.btn:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.btn.primary{background:var(--lilac);color:var(--on-lilac)}
+body[data-mode="focus"] .btn.primary{background:var(--sun);color:var(--on-sun)}
+.btn.ghost{background:var(--card);color:var(--muted);border-color:var(--line);font-size:15px;min-height:46px}
+.btn.link{background:none;border:none;color:var(--muted);font-size:14px;min-height:44px;text-decoration:underline;width:auto}
+.tip{font-size:14px;color:var(--muted);font-weight:600;text-align:center;text-wrap:balance;min-height:1.4em}
+.carry{display:flex;align-items:flex-start;gap:10px;background:var(--lilac-wash);border-radius:20px;padding:12px 16px;font-size:15px;font-weight:600}
+.carry[hidden]{display:none}
+.carry p{flex:1}
+.carry button{font:inherit;background:none;border:none;color:var(--lilac);font-weight:800;cursor:pointer;min-width:36px;min-height:36px;font-size:22px;line-height:1}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 8px}
+.stat{border-radius:20px;padding:14px 8px;text-align:center}
+.stat:nth-child(1){background:var(--lilac-wash)}
+.stat:nth-child(2){background:var(--blush)}
+.stat:nth-child(3){background:var(--sage)}
+.stat b{display:block;font-size:21px;font-weight:800;font-variant-numeric:tabular-nums}
+.stat small{font-size:12px;color:var(--muted);font-weight:700}
+ul.sessions{list-style:none;display:flex;flex-direction:column}
+ul.sessions li{display:flex;gap:10px;align-items:baseline;padding:10px 0;border-top:1px solid var(--line);font-size:14px;font-weight:600}
+ul.sessions li:first-child{border-top:none}
+ul.sessions .when{font-variant-numeric:tabular-nums;color:var(--muted);min-width:44px}
+ul.sessions .what{flex:1;overflow-wrap:anywhere}
+ul.sessions .dur{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.empty{font-size:14px;color:var(--muted);font-weight:600;padding:6px 0}
+.chart{display:flex;align-items:flex-end;gap:8px;height:160px;margin-top:14px}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;height:100%}
+.col .plot{flex:1;width:100%;display:flex;align-items:flex-end;min-height:0}
+.bar{width:100%;border-radius:12px;background:var(--lilac-soft);min-height:4px}
+.col.today .bar{background:var(--lilac)}
+.val{font-size:11px;font-weight:800;font-variant-numeric:tabular-nums;height:14px}
+.day{font-size:12px;color:var(--muted);font-weight:700}
+.col.today .day{color:var(--ink);font-weight:800}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.row small{color:var(--muted);font-weight:600}
+.row select{width:auto;min-width:176px}
+.card .row + .row{margin-top:16px}
+.sa{stop-color:var(--sky-a)}.sb{stop-color:var(--sky-b)}.wa{stop-color:var(--water-a)}.wb{stop-color:var(--water-b)}
+.disc{fill:var(--sun-disc);opacity:.9}
+.cloud{fill:var(--cloud);opacity:var(--cloud-op)}
+.stars circle{fill:#fff;opacity:var(--star-op)}
+.pad{fill:var(--pad-a)}.padtop{fill:var(--pad-b)}.vein{stroke:var(--pad-a);stroke-width:1.5;stroke-linecap:round}
+.lshadow{fill:var(--lilac);opacity:var(--lily-shadow-op)}
+.lb{fill:var(--petal-back)}.lm{fill:var(--petal-mid)}.lf{fill:var(--petal-front)}
+.toast{position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--toast-bg);color:var(--toast-fg);padding:12px 18px;border-radius:999px;font-size:14px;font-weight:700;max-width:90%;text-align:center}
+.toast[hidden]{display:none}
+footer{display:flex;justify-content:center}
+dialog.modal{border:none;border-radius:28px;background:var(--card);color:var(--ink);padding:24px;width:min(380px,calc(100% - 32px));margin:auto;box-shadow:0 12px 40px rgba(0,0,0,.25)}
+dialog.modal::backdrop{background:rgba(30,20,60,.55)}
+dialog.modal h2{font-size:19px;margin-bottom:8px}
+dialog.modal p{font-size:15px;font-weight:600;color:var(--muted);margin-bottom:20px}
+dialog.modal .actions{gap:10px}
+.btn.danger{background:#C93A57;color:#fff;font-size:16px;min-height:50px}
+dialog.modal .btn.ghost{color:var(--ink);font-size:16px;min-height:50px}
+
+/* tablet and laptop: timer on the left, settings and stats on the right */
+@media (min-width:720px){
+  body{padding:max(28px,env(safe-area-inset-top)) max(28px,env(safe-area-inset-right)) max(36px,env(safe-area-inset-bottom)) max(28px,env(safe-area-inset-left))}
+  main{max-width:900px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+  main > header,main > .carry,main > footer{grid-column:1 / -1}
+  main > .timer{grid-column:1;grid-row:span 3}
+  main > .card:not(.timer){grid-column:2}
+  h1{font-size:26px}
+  .time{font-size:60px}
+}
+@media (min-width:720px) and (min-height:760px){
+  main > .timer{position:sticky;top:24px}
+}
+@media (min-width:1024px){
+  main{max-width:1040px;grid-template-columns:minmax(0,460px) minmax(0,1fr);gap:24px}
+  .card{padding:24px}
+  .timer{padding:0}
+  .chart{height:200px}
+  ul.sessions li{font-size:15px}
+}
+
+/* scene */
+.petal{transform-box:fill-box;transform-origin:50% 100%;transition:transform 1.4s cubic-bezier(.3,.7,.3,1)}
+.petal.back{fill:var(--petal-back)}
+.petal.mid{fill:var(--petal-mid)}
+.petal.front{fill:var(--petal-front)}
+.petal{stroke:var(--petal-stroke);stroke-width:1.4}
+.rip{fill:none;stroke:#fff;stroke-width:1.6;opacity:.35;transform-box:fill-box;transform-origin:center}
+body[data-mode="focus"] .rip,body[data-mode="break"] .rip{animation:rip 5s ease-out infinite}
+.rip.b{animation-delay:1.7s}
+.rip.c{animation-delay:3.4s}
+@keyframes rip{0%{transform:scale(.55);opacity:.85}100%{transform:scale(1.3);opacity:0}}
+body[data-mode="focus"] #float,body[data-mode="break"] #float{animation:bob 5s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){
+  body[data-mode="focus"] .rip,body[data-mode="break"] .rip,body[data-mode="focus"] #float,body[data-mode="break"] #float{animation:none}
+  .petal,.barfill{transition:none}
+}
+</style>
+</head>
+<body data-mode="idle">
+<main>
+  <header>
+    <div class="brand">
+      <svg class="logo" viewBox="-34 -42 68 46" aria-hidden="true">
+        <path class="lb" d="M0 0C-18-16-20-50 0-78C20-50 18-16 0 0Z" transform="rotate(-50) scale(.5)"/>
+        <path class="lb" d="M0 0C-18-16-20-50 0-78C20-50 18-16 0 0Z" transform="rotate(50) scale(.5)"/>
+        <path class="lm" d="M0 0C-18-16-20-50 0-78C20-50 18-16 0 0Z" transform="rotate(-22) scale(.55)"/>
+        <path class="lm" d="M0 0C-18-16-20-50 0-78C20-50 18-16 0 0Z" transform="rotate(22) scale(.55)"/>
+        <path class="lf" d="M0 0C-18-16-20-50 0-78C20-50 18-16 0 0Z" transform="scale(.58)"/>
+      </svg>
+      <h1>Flowmodoro</h1>
+    </div>
+    <span id="chip" class="chip">Siap</span>
+  </header>
+
+  <div id="carry" class="carry" hidden>
+    <p><b>Lanjut dari:</b> <span id="carryText"></span></p>
+    <button id="carryX" type="button" aria-label="Tutup catatan">&times;</button>
+  </div>
+
+  <section class="card timer" aria-label="Timer">
+    <svg class="scene" viewBox="0 0 240 190" role="img" aria-label="Bunga teratai di kolam yang mekar perlahan selama kamu fokus">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="sa"/><stop offset="1" class="sb"/></linearGradient>
+        <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="wa"/><stop offset="1" class="wb"/></linearGradient>
+      </defs>
+      <rect width="240" height="190" fill="url(#sky)"/>
+      <g class="stars">
+        <circle cx="26" cy="22" r="1.3"/><circle cx="84" cy="14" r="1"/><circle cx="118" cy="46" r="1.2"/>
+        <circle cx="150" cy="20" r="1"/><circle cx="28" cy="84" r="1"/><circle cx="96" cy="88" r="1.2"/>
+        <circle cx="226" cy="96" r="1"/><circle cx="62" cy="58" r="1"/><circle cx="176" cy="100" r="1"/>
+      </g>
+      <circle class="disc" cx="196" cy="44" r="20"/>
+      <g class="cloud">
+        <ellipse cx="46" cy="40" rx="24" ry="8"/>
+        <ellipse cx="64" cy="33" rx="16" ry="8"/>
+        <ellipse cx="150" cy="70" rx="20" ry="6"/>
+        <ellipse cx="164" cy="65" rx="12" ry="6"/>
+      </g>
+      <rect y="132" width="240" height="58" fill="url(#water)"/>
+      <ellipse cx="120" cy="150" rx="62" ry="12" class="rip a"/>
+      <ellipse cx="120" cy="150" rx="62" ry="12" class="rip b"/>
+      <ellipse cx="120" cy="150" rx="62" ry="12" class="rip c"/>
+      <g>
+        <ellipse class="pad" cx="44" cy="160" rx="32" ry="8"/>
+        <ellipse class="padtop" cx="44" cy="158.5" rx="32" ry="7"/>
+        <path class="vein" d="M44 158.5 L66 154"/>
+        <ellipse class="pad" cx="196" cy="168" rx="26" ry="6.5"/>
+        <ellipse class="padtop" cx="196" cy="166.8" rx="26" ry="5.6"/>
+        <path class="vein" d="M196 166.8 L176 163.6"/>
+      </g>
+      <ellipse class="lshadow" cx="120" cy="157" rx="34" ry="6"/>
+      <g id="float">
+        <ellipse class="pad" cx="120" cy="154" rx="48" ry="9"/>
+        <ellipse class="padtop" cx="120" cy="152.6" rx="48" ry="8"/>
+        <g id="lily" transform="translate(120 152) scale(1.3)"></g>
+      </g>
+    </svg>
+
+    <div class="body">
+      <div class="readout">
+        <div id="time" class="time" role="timer" aria-live="off">00:00</div>
+        <div id="sub" class="sub">Tarik napas, lalu mulai pelan-pelan.</div>
+      </div>
+      <div id="barwrap" class="barwrap" hidden><div id="bar" class="barfill"></div></div>
+
+      <label class="field" id="taskWrap" for="task">
+        <span>Fokus pada apa?</span>
+        <input id="task" type="text" maxlength="80" placeholder="Contoh: tulis bagian Requirements di PRD" autocomplete="off">
+      </label>
+      <label class="field" id="noteWrap" for="note" hidden>
+        <span>Langkah berikutnya (dibaca lagi setelah istirahat)</span>
+        <input id="note" type="text" maxlength="100" placeholder="Contoh: lanjut menulis edge cases" autocomplete="off">
+      </label>
+
+      <div class="actions">
+        <button id="main" class="btn primary" type="button">Mulai fokus</button>
+        <button id="alt" class="btn ghost" type="button" hidden>Batalkan sesi</button>
+      </div>
+      <p id="tip" class="tip"></p>
+    </div>
+  </section>
+
+  <section class="card" aria-label="Pengaturan">
+    <div class="row">
+      <label for="ratio"><b>Lama istirahat</b><br><small>dari durasi fokus, min 1, maks 30 menit</small></label>
+      <select id="ratio">
+        <option value="6">1/6 (pendek)</option>
+        <option value="5" selected>1/5 (standar)</option>
+        <option value="4">1/4</option>
+        <option value="3">1/3 (panjang)</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="theme"><b>Tampilan</b><br><small>ikuti perangkat atau pilih sendiri</small></label>
+      <select id="theme">
+        <option value="auto" selected>Otomatis</option>
+        <option value="light">Terang</option>
+        <option value="dark">Gelap</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="card" aria-label="Hari ini">
+    <h2>Hari ini</h2>
+    <div class="stats">
+      <div class="stat"><b id="sTotal">0 m</b><small>Total fokus</small></div>
+      <div class="stat"><b id="sCount">0</b><small>Sesi</small></div>
+      <div class="stat"><b id="sMax">0 m</b><small>Terpanjang</small></div>
+    </div>
+    <ul id="list" class="sessions"></ul>
+  </section>
+
+  <section class="card" aria-label="7 hari terakhir">
+    <h2>Menit fokus, 7 hari terakhir</h2>
+    <div id="chart" class="chart"></div>
+  </section>
+
+  <footer>
+    <button id="reset" class="btn link" type="button">Hapus semua riwayat</button>
+  </footer>
+</main>
+<dialog id="confirm" class="modal" aria-labelledby="cTitle" aria-describedby="cText">
+  <h2 id="cTitle">Hapus semua riwayat?</h2>
+  <p id="cText"></p>
+  <div class="actions">
+    <button id="cNo" class="btn ghost" type="button">Batal</button>
+    <button id="cYes" class="btn danger" type="button">Ya, hapus semua</button>
+  </div>
+</dialog>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script>
+(function(){
+  var TIPS = [
+    "Berdiri dan regangkan badan.",
+    "Minum air putih.",
+    "Lihat keluar jendela, jauhi layar.",
+    "Jalan sebentar ke pantry.",
+    "Tarik napas dalam lima kali."
+  ];
+  var DAYS = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
+  var SVGNS = "http://www.w3.org/2000/svg";
+  var PETAL = "M0 0C-18-16-20-50 0-78C20-50 18-16 0 0Z";
+  var BLOOM_SEC = 1500; /* the lily is fully open after 25 minutes of focus */
+  function $(id){ return document.getElementById(id); }
+  function pad(n){ return String(n).padStart(2,"0"); }
+  function load(k, d){ try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } }
+  function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+
+  var st = load("fm_state", null);
+  if(!st || !st.mode) st = {mode:"idle"};
+  var log = load("fm_log", []); if(!Array.isArray(log)) log = [];
+  var cfg = load("fm_cfg", {ratio:5}); if(!cfg || !cfg.ratio) cfg = {ratio:5};
+  if(!cfg.theme) cfg.theme = "auto";
+  var carry = load("fm_carry", ""); if(typeof carry !== "string") carry = "";
+
+  function dayKey(ts){ var d = new Date(ts); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+  function fmt(sec){
+    sec = Math.max(0, Math.floor(sec));
+    var h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+    return h > 0 ? h+":"+pad(m)+":"+pad(s) : pad(m)+":"+pad(s);
+  }
+  function fmtDur(sec){
+    var m = Math.round(sec/60);
+    if(sec > 0 && m < 1) return "<1 m";
+    var h = Math.floor(m/60);
+    return h > 0 ? h+"j "+(m%60)+"m" : m+" m";
+  }
+  function breakFor(elapsed){ return Math.min(1800, Math.max(60, Math.round(elapsed / cfg.ratio))); }
+
+  /* water lily: back, middle, centre, front */
+  var petals = [];
+  (function buildLily(){
+    var g = $("lily");
+    function add(cls, angle, scale){
+      var p = document.createElementNS(SVGNS, "path");
+      p.setAttribute("d", PETAL); p.setAttribute("class", "petal " + cls);
+      g.appendChild(p); petals.push({el:p, a:angle, s:scale});
+    }
+    function centre(){
+      var c = document.createElementNS(SVGNS, "g");
+      var d = [[0,-10,6],[-6,-8,3.6],[6,-8,3.6],[-3,-15,3],[3,-15,3]];
+      d.forEach(function(x){
+        var k = document.createElementNS(SVGNS, "circle");
+        k.setAttribute("cx", x[0]); k.setAttribute("cy", x[1]); k.setAttribute("r", x[2]);
+        k.setAttribute("fill", "#FFC95E"); c.appendChild(k);
+      });
+      g.appendChild(c);
+    }
+    [-78,-52,-26,26,52,78].forEach(function(a){ add("back", a, .72); });
+    [-60,-30,0,30,60].forEach(function(a){ add("mid", a, .62); });
+    centre();
+    [-30,0,30].forEach(function(a){ add("front", a, .5); });
+  })();
+  function setBloom(b){
+    b = Math.max(0, Math.min(1, b));
+    petals.forEach(function(p){
+      var ang = p.a * (0.1 + 0.9*b);
+      var sc = p.s * (0.8 + 0.2*b);
+      p.el.style.transform = "rotate(" + ang.toFixed(1) + "deg) scale(" + sc.toFixed(3) + ")";
+    });
+  }
+
+  var actx = null;
+  function unlockAudio(){
+    try{
+      if(!actx){ var AC = window.AudioContext || window.webkitAudioContext; if(AC) actx = new AC(); }
+      if(actx && actx.state === "suspended") actx.resume();
+    }catch(e){}
+  }
+  function chime(){
+    try{
+      if(actx){
+        var t = actx.currentTime;
+        [523, 784].forEach(function(f, i){
+          var o = actx.createOscillator(), g = actx.createGain();
+          o.type = "sine"; o.frequency.value = f;
+          g.gain.setValueAtTime(0.0001, t + i*0.3);
+          g.gain.exponentialRampToValueAtTime(0.16, t + i*0.3 + 0.05);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + i*0.3 + 0.9);
+          o.connect(g); g.connect(actx.destination);
+          o.start(t + i*0.3); o.stop(t + i*0.3 + 0.95);
+        });
+      }
+    }catch(e){}
+    try{ if(navigator.vibrate) navigator.vibrate([200,100,200]); }catch(e){}
+  }
+
+  var toastTimer;
+  function toast(msg){
+    var el = $("toast"); el.textContent = msg; el.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.hidden = true; }, 3200);
+  }
+
+  function arm(btn, armedLabel, fn){
+    var timer;
+    btn.addEventListener("click", function(){
+      if(btn.dataset.armed){
+        clearTimeout(timer);
+        btn.textContent = btn.dataset.orig;
+        delete btn.dataset.armed;
+        fn();
+      }else{
+        btn.dataset.orig = btn.textContent;
+        btn.dataset.armed = "1";
+        btn.textContent = armedLabel;
+        timer = setTimeout(function(){
+          if(btn.dataset.armed){ btn.textContent = btn.dataset.orig; delete btn.dataset.armed; }
+        }, 3000);
+      }
+    });
+  }
+
+  function applyMode(){
+    var m = st.mode;
+    document.body.dataset.mode = m;
+    $("chip").textContent = m === "idle" ? "Siap" : m === "focus" ? "Fokus" : "Istirahat";
+    $("noteWrap").hidden = m !== "focus";
+    $("taskWrap").hidden = m === "break";
+    $("barwrap").hidden = m !== "break";
+    $("main").textContent = m === "idle" ? "Mulai fokus" : m === "focus" ? "Selesai fokus, mulai istirahat" : "Mulai fokus lagi";
+    $("alt").hidden = m !== "focus";
+    var tip = "";
+    if(m === "break") tip = TIPS[(st.tip || 0) % TIPS.length];
+    else if(m === "focus") tip = "Berhenti saat fokus mulai turun, bukan karena alarm.";
+    $("tip").textContent = tip;
+    $("carry").hidden = !carry;
+    $("carryText").textContent = carry;
+  }
+
+  function tick(){
+    var now = Date.now(), t, sub, bloom;
+    if(st.mode === "idle"){
+      t = "00:00"; sub = "Tarik napas, lalu mulai pelan-pelan."; bloom = 0;
+    }else if(st.mode === "focus"){
+      var el = Math.floor((now - st.startedAt)/1000);
+      t = fmt(el);
+      sub = "Istirahat nanti sekitar " + Math.max(1, Math.round(breakFor(el)/60)) + " menit";
+      bloom = el / BLOOM_SEC;
+    }else{
+      var e2 = Math.floor((now - st.startedAt)/1000);
+      var rem = st.breakSec - e2;
+      if(rem > 0){
+        t = fmt(rem); sub = "Istirahat dulu, jauhi layar";
+        bloom = 0.3 + 0.7 * (rem / st.breakSec);
+        $("bar").style.width = (rem / st.breakSec * 100).toFixed(1) + "%";
+      }else{
+        t = "+" + fmt(-rem); sub = "Istirahat selesai. Siap lanjut?"; bloom = 0.3;
+        $("bar").style.width = "0%";
+        if(!st.chimed){
+          st.chimed = true; save("fm_state", st);
+          if(-rem < 5) chime();
+        }
+      }
+    }
+    $("time").textContent = t;
+    $("sub").textContent = sub;
+    setBloom(bloom);
+    document.title = st.mode === "idle" ? "Flowmodoro" : t + " · Flowmodoro";
+  }
+
+  function renderStats(){
+    var today = dayKey(Date.now());
+    var ts = log.filter(function(e){ return dayKey(e.t) === today; });
+    var total = 0, max = 0;
+    ts.forEach(function(e){ total += e.s; if(e.s > max) max = e.s; });
+    $("sTotal").textContent = fmtDur(total);
+    $("sCount").textContent = String(ts.length);
+    $("sMax").textContent = fmtDur(max);
+
+    var list = $("list"); list.replaceChildren();
+    if(!ts.length){
+      var li0 = document.createElement("li"); li0.className = "empty"; li0.textContent = "Belum ada sesi hari ini.";
+      list.appendChild(li0);
+    }else{
+      ts.slice().reverse().forEach(function(e){
+        var li = document.createElement("li");
+        var d = new Date(e.t);
+        var a = document.createElement("span"); a.className = "when"; a.textContent = pad(d.getHours())+":"+pad(d.getMinutes());
+        var b = document.createElement("span"); b.className = "what"; b.textContent = e.task || "Tanpa label";
+        var c = document.createElement("span"); c.className = "dur"; c.textContent = fmtDur(e.s);
+        li.appendChild(a); li.appendChild(b); li.appendChild(c); list.appendChild(li);
+      });
+    }
+
+    var sums = {};
+    log.forEach(function(e){ var k = dayKey(e.t); sums[k] = (sums[k] || 0) + e.s; });
+    var days = [], maxv = 0, i;
+    for(i = 6; i >= 0; i--){
+      var d2 = new Date(); d2.setDate(d2.getDate() - i);
+      var v = Math.round((sums[dayKey(d2.getTime())] || 0) / 60);
+      if(v > maxv) maxv = v;
+      days.push({v:v, name:DAYS[d2.getDay()], today:i === 0});
+    }
+    var chart = $("chart"); chart.replaceChildren();
+    days.forEach(function(x){
+      var col = document.createElement("div"); col.className = "col" + (x.today ? " today" : "");
+      var val = document.createElement("div"); val.className = "val"; val.textContent = x.v > 0 ? String(x.v) : "";
+      var bar = document.createElement("div"); bar.className = "bar";
+      bar.style.height = maxv > 0 ? Math.max(3, Math.round(x.v / maxv * 100)) + "%" : "4px";
+      var plot = document.createElement("div"); plot.className = "plot"; plot.appendChild(bar);
+      var nm = document.createElement("div"); nm.className = "day"; nm.textContent = x.name;
+      col.appendChild(val); col.appendChild(plot); col.appendChild(nm); chart.appendChild(col);
+    });
+  }
+
+  function startFocus(){
+    st = {mode:"focus", startedAt:Date.now(), task:$("task").value.trim()};
+    $("note").value = "";
+    save("fm_state", st);
+    applyMode(); tick();
+  }
+  function endFocus(){
+    var now = Date.now();
+    var el = Math.round((now - st.startedAt) / 1000);
+    var task = $("task").value.trim();
+    var note = $("note").value.trim();
+    if(el < 30){
+      st = {mode:"idle"};
+      toast("Kurang dari 30 detik, tidak dicatat.");
+    }else{
+      log.push({t:st.startedAt, s:el, task:task});
+      log = log.slice(-500);
+      save("fm_log", log);
+      carry = note; save("fm_carry", carry);
+      st = {mode:"break", startedAt:now, breakSec:breakFor(el), tip:Math.floor(Math.random() * TIPS.length), chimed:false};
+    }
+    save("fm_state", st);
+    applyMode(); renderStats(); tick();
+  }
+
+  $("main").addEventListener("click", function(){
+    unlockAudio();
+    if(st.mode === "focus") endFocus(); else startFocus();
+  });
+  arm($("alt"), "Yakin batalkan? Ketuk lagi", function(){
+    st = {mode:"idle"}; save("fm_state", st); applyMode(); tick();
+    toast("Sesi dibatalkan, tidak dicatat.");
+  });
+  var dlg = $("confirm");
+  function closeDlg(){ try{ dlg.close(); }catch(e){ dlg.removeAttribute("open"); } }
+  $("reset").addEventListener("click", function(){
+    $("cText").textContent = log.length
+      ? log.length + " sesi fokus yang tercatat akan dihapus permanen dan tidak bisa dikembalikan."
+      : "Belum ada sesi yang tercatat. Sesi yang sedang berjalan dan catatan lanjutan akan direset.";
+    try{ dlg.showModal(); }catch(e){ dlg.setAttribute("open", ""); }
+    $("cNo").focus();
+  });
+  $("cNo").addEventListener("click", closeDlg);
+  dlg.addEventListener("click", function(e){ if(e.target === dlg) closeDlg(); });
+  $("cYes").addEventListener("click", function(){
+    closeDlg();
+    log = []; carry = ""; st = {mode:"idle"};
+    save("fm_log", log); save("fm_carry", carry); save("fm_state", st);
+    applyMode(); renderStats(); tick();
+    toast("Riwayat dihapus.");
+  });
+  $("carryX").addEventListener("click", function(){ carry = ""; save("fm_carry", carry); applyMode(); });
+  $("task").addEventListener("input", function(){
+    if(st.mode === "focus"){ st.task = $("task").value.trim(); save("fm_state", st); }
+  });
+  var rootEl = document.documentElement, hostTheme = rootEl.getAttribute("data-theme");
+  function applyTheme(v){
+    if(v === "light" || v === "dark") rootEl.setAttribute("data-theme", v);
+    else if(hostTheme) rootEl.setAttribute("data-theme", hostTheme);
+    else rootEl.removeAttribute("data-theme");
+  }
+  applyTheme(cfg.theme);
+  $("theme").value = cfg.theme;
+  $("theme").addEventListener("change", function(){
+    cfg.theme = $("theme").value; save("fm_cfg", cfg); applyTheme(cfg.theme);
+  });
+  $("ratio").value = String(cfg.ratio);
+  $("ratio").addEventListener("change", function(){
+    cfg.ratio = parseInt($("ratio").value, 10) || 5; save("fm_cfg", cfg);
+  });
+
+  if(st.mode === "focus" && st.task) $("task").value = st.task;
+  setBloom(0);
+  applyMode(); renderStats(); tick();
+  setInterval(tick, 250);
+  document.addEventListener("visibilitychange", function(){ tick(); });
+})();
+</script>
+</body>
+</html>
